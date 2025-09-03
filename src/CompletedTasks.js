@@ -1,31 +1,29 @@
-import React from 'react';
+import { CheckCircleIcon } from '@heroicons/react/24/solid';
 
 function CompletedTasks({ tasks, onDelete }) {
-  const completed = tasks.filter((task) => task.completed);
-
-  if (completed.length === 0) return null;
+  const completedTasks = tasks.filter(task => task.completed);
 
   return (
-    <div className="mt-10">
-      <h2 className="text-2xl font-semibold text-indigo-200 mb-4">Completed Tasks</h2>
-      <ul>
-        {completed.map((task, index) => {
-          const originalIndex = tasks.indexOf(task);
-          return (
-            <li
-              key={originalIndex}
-              className="flex items-center justify-between bg-gray-700 p-3 rounded-md mb-3 shadow-md"
+    <div>
+      <h2 className="text-2xl font-semibold text-emerald-300 mb-4">✅ Completed Tasks</h2>
+      <ul className="space-y-4">
+        {completedTasks.map((task, index) => (
+          <li
+            key={index}
+            className="flex items-center justify-between bg-white/10 p-4 rounded-xl shadow-md hover:bg-white/20 transition"
+          >
+            <div className="flex items-center gap-3">
+              <CheckCircleIcon className="w-6 h-6 text-emerald-400" />
+              <span className="line-through text-white text-lg">{task.text}</span>
+            </div>
+            <button
+              onClick={() => onDelete(index)}
+              className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
             >
-              <span className="text-lg line-through text-gray-400">{task.text}</span>
-              <button
-                onClick={() => onDelete(originalIndex)}
-                className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-              >
-                Delete
-              </button>
-            </li>
-          );
-        })}
+              Delete
+            </button>
+          </li>
+        ))}
       </ul>
     </div>
   );

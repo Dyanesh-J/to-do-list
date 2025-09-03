@@ -41,76 +41,80 @@ function App() {
   const activeTasks = tasks.filter(task => !task.completed);
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-6 text-white">
-      <div className="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md">
-        <h1 className="text-4xl font-bold text-center text-indigo-300 mb-6">To-Do List</h1>
-        <div className="flex mb-6">
+    <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] flex items-center justify-center p-6">
+      <div className="w-full max-w-3xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.6)] p-10 text-white">
+        <h1 className="text-5xl font-extrabold text-center mb-10 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400">
+          ✨ My Tasks
+        </h1>
+
+        <div className="flex gap-4 mb-10">
           <input
             type="text"
-            className="flex-grow p-3 bg-gray-700 text-white border border-gray-600 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Add a new task..."
+            className="flex-grow px-5 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
+            placeholder="Type your task here..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleAddTask()}
           />
           <button
             onClick={handleAddTask}
-            className="p-3 bg-indigo-500 text-white rounded-r-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+            className="px-6 py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-xl hover:scale-105 transition-transform"
           >
-            Add
+            Add Task
           </button>
         </div>
 
-        {/* ✅ Only show active tasks, no delete button */}
-        <ul>
-          {activeTasks.map((task, index) => {
-            const originalIndex = tasks.indexOf(task);
-            return (
-              <li
-                key={originalIndex}
-                className="flex items-center justify-between bg-gray-700 p-3 rounded-md mb-3 shadow-md"
-              >
-                <div className="flex items-center w-full">
-                  <input
-                    type="checkbox"
-                    checked={task.completed}
-                    onChange={() => handleToggleTask(originalIndex)}
-                    className="mr-3 w-5 h-5 text-indigo-500 bg-gray-800 rounded border-gray-600 focus:ring-indigo-500"
-                  />
-                  {editingIndex === originalIndex ? (
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold text-pink-300 mb-4">📝 Active Tasks</h2>
+          <ul className="space-y-4">
+            {activeTasks.map((task, index) => {
+              const originalIndex = tasks.indexOf(task);
+              return (
+                <li
+                  key={originalIndex}
+                  className="flex items-center justify-between bg-white/10 p-4 rounded-xl shadow-md hover:bg-white/20 transition"
+                >
+                  <div className="flex items-center gap-4 w-full">
                     <input
-                      type="text"
-                      value={editValue}
-                      onChange={(e) => setEditValue(e.target.value)}
-                      className="flex-grow bg-gray-600 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      type="checkbox"
+                      checked={task.completed}
+                      onChange={() => handleToggleTask(originalIndex)}
+                      className="w-5 h-5 accent-pink-500"
                     />
-                  ) : (
-                    <span className="flex-grow text-lg text-white">{task.text}</span>
-                  )}
-                </div>
-                <div className="flex gap-2 ml-3">
-                  {editingIndex === originalIndex ? (
-                    <button
-                      onClick={handleSaveEdit}
-                      className="px-2 py-1 bg-emerald-500 text-white rounded hover:bg-emerald-600 transition"
-                    >
-                      Save
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleEditTask(originalIndex)}
-                      className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
-                    >
-                      Edit
-                    </button>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+                    {editingIndex === originalIndex ? (
+                      <input
+                        type="text"
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        className="flex-grow bg-white/10 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                    ) : (
+                      <span className="flex-grow text-lg">{task.text}</span>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    {editingIndex === originalIndex ? (
+                      <button
+                        onClick={handleSaveEdit}
+                        className="px-3 py-1 bg-emerald-500 text-white rounded hover:bg-emerald-600 transition"
+                      >
+                        Save
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleEditTask(originalIndex)}
+                        className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+                      >
+                        Edit
+                      </button>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
 
-        {/* ✅ Completed tasks with delete button */}
         <CompletedTasks tasks={tasks} onDelete={handleDeleteTask} />
       </div>
     </div>
