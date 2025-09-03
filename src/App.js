@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import CompletedTasks from './CompletedTasks';
+import confetti from 'canvas-confetti';
+import { CheckCircleIcon } from '@heroicons/react/24/solid';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -16,8 +17,19 @@ function App() {
 
   const handleToggleTask = (index) => {
     const newTasks = [...tasks];
+    const wasCompleted = newTasks[index].completed;
+
     newTasks[index].completed = !newTasks[index].completed;
     setTasks(newTasks);
+
+    if (!wasCompleted) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#a855f7', '#22d3ee', '#f472b6']
+      });
+    }
   };
 
   const handleDeleteTask = (index) => {
@@ -39,6 +51,7 @@ function App() {
   };
 
   const activeTasks = tasks.filter(task => !task.completed);
+  const completedTasks = tasks.filter(task => task.completed);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] flex items-center justify-center p-6">
@@ -64,6 +77,7 @@ function App() {
           </button>
         </div>
 
+        {/* Active Tasks */}
         <div className="mb-8">
           <h2 className="text-2xl font-semibold text-pink-300 mb-4">📝 Active Tasks</h2>
           <ul className="space-y-4">
@@ -115,7 +129,29 @@ function App() {
           </ul>
         </div>
 
-        <CompletedTasks tasks={tasks} onDelete={handleDeleteTask} />
+        {/* Completed Tasks */}
+        <div>
+          <h2 className="text-2xl font-semibold text-emerald-300 mb-4">✅ Completed Tasks</h2>
+          <ul className="space-y-4">
+            {completedTasks.map((task, index) => (
+              <li
+                key={index}
+                className="flex items-center justify-between bg-white/10 p-4 rounded-xl shadow-md hover:bg-white/20 transition"
+              >
+                <div className="flex items-center gap-3">
+                  <CheckCircleIcon className="w-6 h-6 text-emerald-400" />
+                  <span className="line-through text-white text-lg">{task.text}</span>
+                </div>
+                <button
+                  onClick={() => handleDeleteTask(tasks.indexOf(task))}
+                  className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
