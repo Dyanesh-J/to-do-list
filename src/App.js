@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import CompletedTasks from './CompletedTasks';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -37,6 +38,8 @@ function App() {
     setEditValue('');
   };
 
+  const activeTasks = tasks.filter(task => !task.completed);
+
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-6 text-white">
       <div className="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md">
@@ -58,23 +61,23 @@ function App() {
           </button>
         </div>
 
-        {/* Current Tasks Section */}
-        <h2 className="text-2xl font-semibold text-indigo-200 mb-4">Current Tasks</h2>
+        {/* ✅ Only show active tasks, no delete button */}
         <ul>
-          {tasks.map((task, index) =>
-            !task.completed ? (
+          {activeTasks.map((task, index) => {
+            const originalIndex = tasks.indexOf(task);
+            return (
               <li
-                key={index}
+                key={originalIndex}
                 className="flex items-center justify-between bg-gray-700 p-3 rounded-md mb-3 shadow-md"
               >
                 <div className="flex items-center w-full">
                   <input
                     type="checkbox"
                     checked={task.completed}
-                    onChange={() => handleToggleTask(index)}
+                    onChange={() => handleToggleTask(originalIndex)}
                     className="mr-3 w-5 h-5 text-indigo-500 bg-gray-800 rounded border-gray-600 focus:ring-indigo-500"
                   />
-                  {editingIndex === index ? (
+                  {editingIndex === originalIndex ? (
                     <input
                       type="text"
                       value={editValue}
@@ -86,7 +89,7 @@ function App() {
                   )}
                 </div>
                 <div className="flex gap-2 ml-3">
-                  {editingIndex === index ? (
+                  {editingIndex === originalIndex ? (
                     <button
                       onClick={handleSaveEdit}
                       className="px-2 py-1 bg-emerald-500 text-white rounded hover:bg-emerald-600 transition"
@@ -95,42 +98,20 @@ function App() {
                     </button>
                   ) : (
                     <button
-                      onClick={() => handleEditTask(index)}
+                      onClick={() => handleEditTask(originalIndex)}
                       className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
                     >
                       Edit
                     </button>
                   )}
-                  <button
-                    onClick={() => handleDeleteTask(index)}
-                    className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                  >
-                    Delete
-                  </button>
                 </div>
               </li>
-            ) : null
-          )}
+            );
+          })}
         </ul>
 
-        {/* Completed Tasks Section */}
-        {tasks.some((task) => task.completed) && (
-          <div className="mt-10">
-            <h2 className="text-2xl font-semibold text-indigo-200 mb-4">Completed Tasks</h2>
-            <ul>
-              {tasks.map((task, index) =>
-                task.completed ? (
-                  <li
-                    key={index}
-                    className="bg-gray-700 p-3 rounded-md mb-3 shadow-md"
-                  >
-                    <span className="text-lg line-through text-gray-400">{task.text}</span>
-                  </li>
-                ) : null
-              )}
-            </ul>
-          </div>
-        )}
+        {/* ✅ Completed tasks with delete button */}
+        <CompletedTasks tasks={tasks} onDelete={handleDeleteTask} />
       </div>
     </div>
   );
