@@ -57,62 +57,80 @@ function App() {
             Add
           </button>
         </div>
+
+        {/* Current Tasks Section */}
+        <h2 className="text-2xl font-semibold text-indigo-200 mb-4">Current Tasks</h2>
         <ul>
-          {tasks.map((task, index) => (
-            <li
-              key={index}
-              className="flex items-center justify-between bg-gray-700 p-3 rounded-md mb-3 shadow-md"
-            >
-              <div className="flex items-center w-full">
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => handleToggleTask(index)}
-                  className="mr-3 w-5 h-5 text-indigo-500 bg-gray-800 rounded border-gray-600 focus:ring-indigo-500"
-                />
-                {editingIndex === index ? (
+          {tasks.map((task, index) =>
+            !task.completed ? (
+              <li
+                key={index}
+                className="flex items-center justify-between bg-gray-700 p-3 rounded-md mb-3 shadow-md"
+              >
+                <div className="flex items-center w-full">
                   <input
-                    type="text"
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    className="flex-grow bg-gray-600 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={() => handleToggleTask(index)}
+                    className="mr-3 w-5 h-5 text-indigo-500 bg-gray-800 rounded border-gray-600 focus:ring-indigo-500"
                   />
-                ) : (
-                  <span
-                    className={`flex-grow text-lg ${
-                      task.completed ? 'line-through text-gray-400' : 'text-white'
-                    }`}
-                  >
-                    {task.text}
-                  </span>
-                )}
-              </div>
-              <div className="flex gap-2 ml-3">
-                {editingIndex === index ? (
+                  {editingIndex === index ? (
+                    <input
+                      type="text"
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      className="flex-grow bg-gray-600 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                  ) : (
+                    <span className="flex-grow text-lg text-white">{task.text}</span>
+                  )}
+                </div>
+                <div className="flex gap-2 ml-3">
+                  {editingIndex === index ? (
+                    <button
+                      onClick={handleSaveEdit}
+                      className="px-2 py-1 bg-emerald-500 text-white rounded hover:bg-emerald-600 transition"
+                    >
+                      Save
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleEditTask(index)}
+                      className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+                    >
+                      Edit
+                    </button>
+                  )}
                   <button
-                    onClick={handleSaveEdit}
-                    className="px-2 py-1 bg-emerald-500 text-white rounded hover:bg-emerald-600 transition"
+                    onClick={() => handleDeleteTask(index)}
+                    className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
                   >
-                    Save
+                    Delete
                   </button>
-                ) : (
-                  <button
-                    onClick={() => handleEditTask(index)}
-                    className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
-                  >
-                    Edit
-                  </button>
-                )}
-                <button
-                  onClick={() => handleDeleteTask(index)}
-                  className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                >
-                  Delete
-                </button>
-              </div>
-            </li>
-          ))}
+                </div>
+              </li>
+            ) : null
+          )}
         </ul>
+
+        {/* Completed Tasks Section */}
+        {tasks.some((task) => task.completed) && (
+          <div className="mt-10">
+            <h2 className="text-2xl font-semibold text-indigo-200 mb-4">Completed Tasks</h2>
+            <ul>
+              {tasks.map((task, index) =>
+                task.completed ? (
+                  <li
+                    key={index}
+                    className="bg-gray-700 p-3 rounded-md mb-3 shadow-md"
+                  >
+                    <span className="text-lg line-through text-gray-400">{task.text}</span>
+                  </li>
+                ) : null
+              )}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
